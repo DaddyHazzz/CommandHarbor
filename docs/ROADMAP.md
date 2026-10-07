@@ -66,7 +66,9 @@ A lease should answer:
 
 The goal is not merely locking. It is coordination among heterogeneous workers without accidental conflict.
 
-**Status:** next major control-plane primitive.
+The initial reference implementation acquires the full Task Envelope resource set atomically. Shared/shared holders may coexist; any exclusive holder conflicts. Leases snapshot task identity and authority, expire no later than the task envelope, and require exact lease/task identity for renewal or release. Explicit teardown reasons cover completion, cancellation, failure, worker loss, and manual release. Distributed authority will still require a durable store plus optimistic concurrency/fencing semantics; this in-memory layer deliberately does not pretend to solve consensus.
+
+**Status:** in-memory deterministic contract/reference implementation complete; distributed/runtime authority integration pending.
 
 ## Phase 3 — Execution strategy as an explicit decision
 
