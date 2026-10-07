@@ -12,10 +12,6 @@ import {
 } from "@commandharbor/protocol";
 import { PROCESS_CAPABILITY_NAMES, createProcessCapabilityExecutor } from "./process-capabilities";
 import {
-  SEARCH_SESSION_CAPABILITY_NAMES,
-  createSearchSessionCapabilityExecutor,
-} from "./search-session-capabilities";
-import {
   DOCUMENT_CAPABILITY_NAMES,
   createDocumentCapabilityExecutor,
 } from "./document-capabilities";
@@ -45,7 +41,6 @@ export const CAPABILITY_NAMES = [
   "read_multiple_files",
   "search_files",
   "search_text",
-  ...SEARCH_SESSION_CAPABILITY_NAMES,
   ...DOCUMENT_CAPABILITY_NAMES,
   ...RETRIEVAL_CAPABILITY_NAMES,
   "write_file",
