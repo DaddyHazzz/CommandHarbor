@@ -5,3 +5,4 @@ export * from "./worker-adapter";
 export * from "./resource-arbiter";
 export * from "./outcome-verifier";
 export * from "./budget-ledger";
+export * from "./arbitration-engine";

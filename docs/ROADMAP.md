@@ -187,7 +187,11 @@ Decision hierarchy:
 
 Probabilistic output never grants authority by itself.
 
-**Status:** deterministic decision hierarchy and System One-style bounded-decision seam implemented; full arbiter pending.
+The initial arbitration core is side-effect-free and fail-closed. It scopes required capabilities against Task Envelope authority, filters unavailable or capability-incompatible workers, intersects each worker's declared strategies with current strategy availability, selects a uniquely strongest strategy when one exists, and returns typed ambiguity rather than making an arbitrary tied choice. A bounded model or human may suggest among the already-eligible tied candidates, but the suggestion must pass deterministic eligibility validation before it can become a selection. The engine does not acquire leases, reserve budget, dispatch work, or grant authority by itself.
+
+Cost, latency, historical reliability, richer device state, and durable fleet authority remain future inputs; they should be added as explicit deterministic policy signals rather than smuggled in through model prose.
+
+**Status:** deterministic worker/strategy arbitration core implemented; bounded ambiguity resolution and durable runtime integration pending.
 
 ## Phase 8 — Canonical multi-agent coordination demonstration
 

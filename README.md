@@ -68,7 +68,7 @@ Current open-core progress includes:
 - generalized resource arbiter: **implemented in open-core contract; runtime integration pending**
 - independent outcome verification: **implemented in open-core contract; concrete probes/runtime integration pending**
 - task-level budget reservation ledger: **implemented in open-core contract; distributed/fleet enforcement pending**
-- fleet-level arbitration engine: **after durable shared authority integration**
+- deterministic worker/strategy arbitration core: **implemented; bounded ambiguity + durable runtime integration pending**
 
 ## Development
 
