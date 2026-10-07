@@ -67,7 +67,8 @@ Current open-core progress includes:
 - System One-style bounded decision seam: **implemented, advisory**
 - generalized resource arbiter: **implemented in open-core contract; runtime integration pending**
 - independent outcome verification: **implemented in open-core contract; concrete probes/runtime integration pending**
-- fleet-level budgets and arbitration engine: **after task/resource semantics**
+- task-level budget reservation ledger: **implemented in open-core contract; distributed/fleet enforcement pending**
+- fleet-level arbitration engine: **after durable shared authority integration**
 
 ## Development
 

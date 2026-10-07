@@ -147,7 +147,11 @@ Initial budgets should cover:
 
 The important property is aggregate fleet enforcement, not asking every worker independently to behave.
 
-**Status:** budget fields exist in Task Envelope; enforcement pending.
+The initial open-core budget ledger uses reservation-before-dispatch semantics so concurrent operations cannot each pass a stale budget check and then oversubscribe the task. Reservations cover one tool call plus bounded network requests, spend, human approvals, and destination-specific requests; active reservations count against concurrency immediately. Settlement may consume only within the reserved upper bounds, while cancellation releases an undispatched reservation without consuming budget. New operation reservations are blocked at the earlier of Task Envelope expiry and maxDurationMs. Runtime integration remains responsible for cancelling or containing an operation already in flight at that deadline; the ledger continues to accept final settlement afterward so actual usage is not erased from accounting.
+
+This is still a task-local in-memory reference implementation. Fleet-wide enforcement requires a durable shared authority with atomic compare-and-set / transactional reservation semantics; callers must not infer distributed safety from the local ledger.
+
+**Status:** deterministic task-level reservation ledger implemented; distributed/fleet enforcement pending.
 
 ## Phase 7 — Deterministic-first Arbitration Engine
 
