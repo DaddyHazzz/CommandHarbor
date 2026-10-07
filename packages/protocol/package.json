@@ -1,0 +1,16 @@
+﻿{
+    "name":  "@commandharbor/protocol",
+    "version":  "0.0.0",
+    "private":  true,
+    "type":  "module",
+    "scripts":  {
+                    "typecheck":  "tsc -p tsconfig.json --noEmit",
+                    "test":  "vitest run --config ../../vitest.config.ts"
+                },
+    "dependencies":  {
+                         "zod":  "^4.5.4"
+                     },
+    "exports":  {
+                    ".":  "./src/index.ts"
+                }
+}
