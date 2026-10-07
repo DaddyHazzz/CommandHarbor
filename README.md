@@ -69,6 +69,7 @@ Current open-core progress includes:
 - independent outcome verification: **implemented in open-core contract; concrete probes/runtime integration pending**
 - task-level budget reservation ledger: **implemented in open-core contract; distributed/fleet enforcement pending**
 - deterministic worker/strategy arbitration core: **implemented; bounded ambiguity + durable runtime integration pending**
+- executable two-worker coordination contract demo: **implemented; real fleet acceptance pending**
 
 ## Development
 

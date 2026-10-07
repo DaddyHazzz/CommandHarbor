@@ -210,7 +210,9 @@ Target scenario:
 
 The operator should be able to see who did what, where, under what authority, and what evidence proves completion.
 
-**Status:** not started; depends on leases, adapters, budgets, and verification.
+An executable open-core contract fixture now composes the deterministic primitives into the target story: two heterogeneous workers on two logical machines, an intentional repository conflict, lease release/reacquisition, stronger-strategy selection, simulated worker failure and reroute, enforced task budget, and independent final-state verification. The fixture is explicitly marked contractOnly and does not claim live fleet or production evidence.
+
+**Status:** executable coordination contract demo implemented; real two-machine runtime acceptance demo pending.
 
 ## Phase 9 — Operator Control Plane
 
