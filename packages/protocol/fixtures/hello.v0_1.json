@@ -1,0 +1,11 @@
+{
+  "protocolVersion": "0.1",
+  "messageId": "00000000-0000-4000-8000-000000000001",
+  "type": "hello",
+  "deviceId": "00000000-0000-4000-8000-000000000100",
+  "agentVersion": "0.0.1-test",
+  "platform": "win32",
+  "arch": "x64",
+  "capabilities": ["echo", "delay", "fail", "stream"],
+  "connectedAt": 1700000000000
+}
