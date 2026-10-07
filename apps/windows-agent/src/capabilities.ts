@@ -800,9 +800,6 @@ export function createCapabilityExecutor(options: {
     capabilityProfile: CAPABILITY_PROFILE,
   });
   const operatorExecutor = createOperatorCapabilityExecutor(operatorState);
-  const searchSessionExecutor = createSearchSessionCapabilityExecutor({
-    validatePath: async (path) => ensureUnprotectedPath(path, protectedRoots, false),
-  });
   const documentExecutor = createDocumentCapabilityExecutor({
     validatePath: async (path, allowMissing) => ensureUnprotectedPath(path, protectedRoots, allowMissing),
   });
@@ -846,11 +843,6 @@ export function createCapabilityExecutor(options: {
     if (name === "read_multiple_files") return readMultipleTextFiles(args, protectedRoots, signal);
     if (name === "search_files") return searchFiles(args, protectedRoots, signal);
     if (name === "search_text") return searchText(args, protectedRoots, signal);
-    if (SEARCH_SESSION_CAPABILITY_NAMES.includes(
-      name as (typeof SEARCH_SESSION_CAPABILITY_NAMES)[number],
-    )) {
-      return searchSessionExecutor(name, args, signal);
-    }
     if (DOCUMENT_CAPABILITY_NAMES.includes(
       name as (typeof DOCUMENT_CAPABILITY_NAMES)[number],
     )) {
