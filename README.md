@@ -66,7 +66,7 @@ Current open-core progress includes:
 - provider-neutral Worker Adapter interface: **implemented**
 - System One-style bounded decision seam: **implemented, advisory**
 - generalized resource arbiter: **implemented in open-core contract; runtime integration pending**
-- independent outcome verification: **next**
+- independent outcome verification: **implemented in open-core contract; concrete probes/runtime integration pending**
 - fleet-level budgets and arbitration engine: **after task/resource semantics**
 
 ## Development

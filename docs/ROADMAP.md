@@ -127,7 +127,9 @@ Examples:
 
 Success predicates should be declared before execution whenever practical and become durable evidence.
 
-**Status:** Task Envelope can already describe initial predicates; verifier engine pending.
+The verifier engine consumes only the Task Envelope success contract plus an independent probe adapter. It evaluates all declared predicates, distinguishes deterministic mismatch from unavailable/error evidence, treats empty success contracts as indeterminate rather than successful, and never accepts a worker self-report as proof. Runtime probe adapters remain responsible for binding observations to the task's authorized resources and for collecting evidence through an authority surface independent of the worker being judged.
+
+**Status:** deterministic verifier engine implemented; concrete independent probes and runtime integration pending.
 
 ## Phase 6 — Execution budgets
 
