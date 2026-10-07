@@ -32,6 +32,8 @@ import {
   createDesktopControlCapabilityExecutor,
 } from "./desktop-control-capability";
 
+import { authorizeCapabilityExecution, type CapabilityAuthorizer, type CapabilityExecutionContext } from "./authorization";
+
 export const CAPABILITY_NAMES = [
   "system_info",
   ...OPERATOR_CAPABILITY_NAMES,
@@ -61,6 +63,7 @@ const implementedCapabilityNames = new Set<string>(CAPABILITY_NAMES);
 
 export const CAPABILITY_PROFILE: CapabilityProfile = {
   version: CAPABILITY_PROFILE_VERSION,
+  executionAuthorizationVersion: 1,
   tools: NEXT_RELEASE_CAPABILITY_PROFILE
     .filter((capability) => implementedCapabilityNames.has(capability.name))
     .map(({ name, category, effect }) => ({ name, category, effect })),
@@ -790,6 +793,7 @@ export function createCapabilityExecutor(options: {
   window?: Parameters<typeof createWindowCapabilityExecutor>[0];
   uiAutomation?: Parameters<typeof createUiAutomationCapabilityExecutor>[0];
   desktopControl?: Parameters<typeof createDesktopControlCapabilityExecutor>[0];
+  authorize?: CapabilityAuthorizer;
 }) {
   const stateRoot = resolve(options.stateRoot);
   const protectedRoots = (options.protectedRoots ?? [stateRoot]).map((root) => resolve(root));
@@ -818,11 +822,18 @@ export function createCapabilityExecutor(options: {
   const windowExecutor = createWindowCapabilityExecutor(options.window);
   const uiAutomationExecutor = createUiAutomationCapabilityExecutor(options.uiAutomation);
   const desktopControlExecutor = createDesktopControlCapabilityExecutor(options.desktopControl);
+  const authorize = options.authorize ?? authorizeCapabilityExecution;
 
-  return async (name: string, args: CapabilityArgs, signal: AbortSignal): Promise<JsonValue> => {
+  return async (
+    name: string,
+    args: CapabilityArgs,
+    signal: AbortSignal,
+    context?: CapabilityExecutionContext,
+  ): Promise<JsonValue> => {
     requireActive(signal);
     if (!CAPABILITY_NAMES.includes(name as CapabilityName)) throw new Error("unsupported_capability");
     if (!isRecord(args)) throw new Error("invalid_arguments");
+    await authorize({ capability: name, args, ...(context ? { context } : {}) });
 
     if (name === "system_info") {
       if (!exactKeys(args, [])) throw new Error("invalid_arguments");

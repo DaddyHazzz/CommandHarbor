@@ -8,6 +8,12 @@ The public execution core describes and implements bounded capabilities on user-
 
 Enrollment, credential persistence, privileged host ownership, and production authorization are outside the public boundary.
 
+### Execution authority handoff
+
+Task-scoped execution must not rely on control-plane selection alone. A control plane that dispatches a task operation derives a narrow per-operation authorization grant and sends it with the operation. The grant binds the task subject, operation ID, capability, canonical argument hash, lease fencing generation, and expiry. The Windows execution core validates that grant immediately before invoking the capability and denies task-mode execution when the grant is missing, expired, or mismatched.
+
+Ordinary non-task traffic remains explicit `session` authorization for compatibility. Capability profiles advertise `executionAuthorizationVersion` so a control plane can refuse task-scoped dispatch to an execution target that does not support the required local enforcement contract. The open core defines and enforces this handoff; hosted identity issuance and production transport authentication remain outside the public boundary.
+
 ## Arbitration control plane
 
 The control-plane package defines context that should travel with autonomous work:

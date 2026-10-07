@@ -41,6 +41,7 @@ describe("device protocol", () => {
     input.capabilities = ["system_info", "read_file"];
     input.capabilityProfile = {
       version: 2,
+      executionAuthorizationVersion: null,
       tools: [
         { name: "system_info", category: "system", effect: "read" },
         { name: "read_file", category: "filesystem", effect: "read" },
@@ -70,6 +71,7 @@ describe("device protocol", () => {
     input.capabilities = ["system_info"];
     input.capabilityProfile = {
       version: 2,
+      executionAuthorizationVersion: null,
       tools: [
         { name: "system_info", category: "system", effect: "read" },
         { name: "system_info", category: "system", effect: "read" },
@@ -83,6 +85,7 @@ describe("device protocol", () => {
     input.capabilities = ["system_info", "read_file"];
     input.capabilityProfile = {
       version: 2,
+      executionAuthorizationVersion: null,
       tools: [
         { name: "system_info", category: "system", effect: "read" },
       ],
@@ -104,6 +107,39 @@ describe("device protocol", () => {
     const input = fixture("operation-request.v0_1.json") as Record<string, unknown>;
     input.expiresAt = 1_700_000_000_000;
     input.issuedAt = 1_700_000_000_001;
+    expect(OperationRequestSchema.safeParse(input).success).toBe(false);
+  });
+
+  it("defaults ordinary operation requests to session authorization", () => {
+    const input = fixture("operation-request.v0_1.json") as Record<string, unknown>;
+    const parsed = OperationRequestSchema.parse(input);
+    expect(parsed.authorizationMode).toBe("session");
+    expect(parsed.authorization).toBeUndefined();
+  });
+
+  it("requires a matching execution grant for task authorization", () => {
+    const input = fixture("operation-request.v0_1.json") as Record<string, unknown>;
+    input.authorizationMode = "task";
+    expect(OperationRequestSchema.safeParse(input).success).toBe(false);
+
+    input.authorization = {
+      schemaVersion: 1,
+      kind: "task",
+      grantId: "10000000-0000-4000-8000-000000000001",
+      authorityId: "control-plane",
+      taskId: "20000000-0000-4000-8000-000000000001",
+      subject: { kind: "human", id: "user-1" },
+      operationId: input.operationId,
+      capability: input.tool,
+      argsSha256: "0".repeat(64),
+      issuedAt: input.issuedAt,
+      expiresAt: input.expiresAt,
+      leaseId: "40000000-0000-4000-8000-000000000001",
+      leaseGeneration: 1,
+    };
+    expect(OperationRequestSchema.safeParse(input).success).toBe(true);
+
+    (input.authorization as Record<string, unknown>).capability = "different_tool";
     expect(OperationRequestSchema.safeParse(input).success).toBe(false);
   });
 

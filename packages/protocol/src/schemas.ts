@@ -28,6 +28,12 @@ const ToolNameSchema = z
   .min(1)
   .max(64)
   .regex(/^[a-z][a-z0-9_.-]*$/);
+const AuthorizationSubjectIdSchema = z.string()
+  .trim()
+  .min(1)
+  .max(256)
+  .regex(/^[A-Za-z0-9][A-Za-z0-9_.:/@-]{0,255}$/);
+const Sha256Schema = z.string().regex(/^[0-9a-f]{64}$/i);
 
 const EnvelopeFields = {
   protocolVersion: z.literal(PROTOCOL_VERSION),
@@ -42,6 +48,7 @@ export const CapabilityDescriptorSchema = z.object({
 
 export const CapabilityProfileSchema = z.object({
   version: z.literal(CAPABILITY_PROFILE_VERSION),
+  executionAuthorizationVersion: z.literal(1).nullable().default(null),
   tools: z.array(CapabilityDescriptorSchema).max(64),
 }).strict().superRefine((value, ctx) => {
   const names = new Set<string>();
@@ -101,6 +108,33 @@ export const BenchmarkCorrelationSchema = z.object({
   source: z.enum(["explicit", "implicit"]),
 }).strict();
 
+export const ExecutionAuthorizationGrantSchema = z.object({
+  schemaVersion: z.literal(1),
+  kind: z.literal("task"),
+  grantId: UuidSchema,
+  authorityId: AuthorizationSubjectIdSchema,
+  taskId: UuidSchema,
+  subject: z.object({
+    kind: z.enum(["human", "worker", "service"]),
+    id: AuthorizationSubjectIdSchema,
+  }).strict(),
+  operationId: UuidSchema,
+  capability: ToolNameSchema,
+  argsSha256: Sha256Schema,
+  issuedAt: TimestampSchema,
+  expiresAt: TimestampSchema,
+  leaseId: UuidSchema,
+  leaseGeneration: z.number().int().positive(),
+}).strict().superRefine((value, ctx) => {
+  if (value.expiresAt <= value.issuedAt) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["expiresAt"],
+      message: "authorization expiresAt must be greater than issuedAt",
+    });
+  }
+});
+
 const OperationRequestBaseSchema = z.object({
   ...EnvelopeFields,
   type: z.literal("operation.request"),
@@ -111,6 +145,8 @@ const OperationRequestBaseSchema = z.object({
   expiresAt: TimestampSchema,
   idempotencyKey: z.string().min(1).max(128),
   benchmark: BenchmarkCorrelationSchema.optional(),
+  authorizationMode: z.enum(["session", "task"]).default("session"),
+  authorization: ExecutionAuthorizationGrantSchema.optional(),
 });
 
 export const OperationRequestSchema = OperationRequestBaseSchema.superRefine(
@@ -121,6 +157,43 @@ export const OperationRequestSchema = OperationRequestBaseSchema.superRefine(
         path: ["expiresAt"],
         message: "expiresAt must be greater than issuedAt",
       });
+    }
+    if (value.authorizationMode === "task" && !value.authorization) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["authorization"],
+        message: "task authorization mode requires a grant",
+      });
+    }
+    if (value.authorizationMode === "session" && value.authorization) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["authorization"],
+        message: "session authorization mode must not carry a task grant",
+      });
+    }
+    if (value.authorization) {
+      if (value.authorization.operationId !== value.operationId) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["authorization", "operationId"],
+          message: "authorization operationId must match operationId",
+        });
+      }
+      if (value.authorization.capability !== value.tool) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["authorization", "capability"],
+          message: "authorization capability must match tool",
+        });
+      }
+      if (value.authorization.expiresAt > value.expiresAt) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["authorization", "expiresAt"],
+          message: "authorization must not outlive operation",
+        });
+      }
     }
   },
 );
@@ -179,6 +252,7 @@ export const DeviceMessageSchema = z.union([
 
 export type CapabilityProfile = z.infer<typeof CapabilityProfileSchema>;
 export type BenchmarkCorrelation = z.infer<typeof BenchmarkCorrelationSchema>;
+export type ExecutionAuthorizationGrant = z.infer<typeof ExecutionAuthorizationGrantSchema>;
 export type Hello = z.infer<typeof HelloSchema>;
 export type OperationRequest = z.infer<typeof OperationRequestSchema>;
 export type OperationResult = z.infer<typeof OperationResultSchema>;
