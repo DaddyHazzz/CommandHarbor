@@ -1,0 +1,9 @@
+{
+  "protocolVersion": "0.1",
+  "messageId": "00000000-0000-4000-8000-000000000004",
+  "type": "error",
+  "operationId": "00000000-0000-4000-8000-000000000010",
+  "code": "tool_error",
+  "message": "fixture failure",
+  "retryable": false
+}

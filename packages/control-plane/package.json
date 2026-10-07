@@ -1,0 +1,13 @@
+﻿{
+  "name": "@commandharbor/control-plane",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --config ../../vitest.config.ts src"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "protocolVersion": "0.1",
+  "messageId": "00000000-0000-4000-8000-000000000002",
+  "type": "operation.request",
+  "operationId": "00000000-0000-4000-8000-000000000010",
+  "tool": "echo",
+  "args": { "text": "hello" },
+  "issuedAt": 1700000000000,
+  "expiresAt": 1700000030000,
+  "idempotencyKey": "test"
+}

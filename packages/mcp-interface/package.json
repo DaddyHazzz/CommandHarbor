@@ -1,0 +1,15 @@
+﻿{
+  "name": "@commandharbor/mcp-interface",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --config ../../vitest.config.ts src"
+  },
+  "dependencies": {
+    "@commandharbor/protocol": "^0.0.0",
+    "@commandharbor/control-plane": "^0.1.0"
+  },
+  "exports": { ".": "./src/index.ts" }
+}

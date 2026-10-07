@@ -1,0 +1,8 @@
+{
+  "protocolVersion": "0.1",
+  "messageId": "00000000-0000-4000-8000-000000000003",
+  "type": "operation.result",
+  "operationId": "00000000-0000-4000-8000-000000000010",
+  "result": { "text": "hello" },
+  "completedAt": 1700000000123
+}
